@@ -566,7 +566,7 @@ function criarTabelaFornecedores(lista) {
 
     lista.forEach(f => {
         const tr = document.createElement("tr");
-        [f.razaoSocial, f.cnpj, f.telefone, f.endereco, `R$ ${f.creditoDisp.toFixed(2)}`].forEach(val => {
+        [f.razaoSocial, f.cnpj, f.telefone, f.endereco, `R$ ${f.creditoDisponibilizado}`].forEach(val => {
             const td = document.createElement("td");
             td.textContent = val;
             tr.appendChild(td);

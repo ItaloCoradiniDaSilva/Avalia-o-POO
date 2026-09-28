@@ -37,7 +37,7 @@ export class Produto {
     }
 
     get vetVendasMensais(){
-        return this.#vetVendasMensais;
+        return this.#vetVendasMensais.splice();
     }
 
     //---------Métodos Setters---------
