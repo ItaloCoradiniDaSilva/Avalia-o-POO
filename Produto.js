@@ -80,8 +80,7 @@ export class Produto {
                 '\n\t"precoVenda" : "' + this.#precoVenda + '" ,' +
                 '\n\t"qtdEstoque" : "' + this.#qtdEstoque + '" ,' +
                 '\n\t"vetVendasMensais" : "' + this.#vetVendasMensais + '" ,' +
-                '\n\t"fornecedor" : "' + this.#fornecedor.razaoSocial + '" ,' +
-                '\n\t"cnpj" : "' + this.#fornecedor.cnpj + '"' +
+                '\n\t"fornecedor" : "' + this.#fornecedor.cnpj + '"' +
                 '\n}'; 
     }
 }
