@@ -67,5 +67,21 @@ export class ArmazemController {
         return vetObjLiteraisFornecedores;
     }
 
+    filtrarFornecedoresPorCredito(minCredito) {
+        var vetObjLiteraisFornecedores = [];
+        this.#vetFornecedores.forEach(fornecedor => {
+            if (fornecedor.creditoDisponibilizado >= minCredito) {
+                vetObjLiteraisFornecedores.push({
+                    razaoSocial: fornecedor.razaoSocial,
+                    cnpj: fornecedor.cnpj,
+                    telefone: fornecedor.telefone,
+                    endereco: fornecedor.endereco,
+                    creditoDisponibilizado: fornecedor.creditoDisponibilizado
+                });
+            }
+        });
+        return vetObjLiteraisFornecedores;
+    }
+
 
 }
