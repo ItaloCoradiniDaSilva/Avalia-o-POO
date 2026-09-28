@@ -2,14 +2,16 @@ import { Fornecedor } from "./Fornecedor.js";
 
 export class Produto {
     #descricao;
-    #preco;
+    #precoCompra;
+    #precoVenda;
     #qtdEstoque;
     #vetVendasMensais;
     #fornecedor;
 
-    constructor(_descricao, _preco, _qtdEstoque, _vetVendasMensais, _fornecedor){
+    constructor(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor){
         this.#descricao = _descricao;
-        this.#preco = _preco.toFixed(2);
+        this.#precoCompra = _precoCompra.toFixed(2);
+        this.#precoVenda = _precoVenda.toFixed(2);
         this.#qtdEstoque = _qtdEstoque;
         this.#vetVendasMensais = _vetVendasMensais;
         if (_fornecedor != undefined && _fornecedor instanceof Fornecedor) {
@@ -17,22 +19,17 @@ export class Produto {
         }
     }
 
-    toString(){
-        return ("Descrição:" + this.#descricao +
-                "\nPreço: R$" + this.#preco +
-                "\nQuantidade em Estoque: " + this.#qtdEstoque +
-                "\nVendas Mensais do Ano: " + this.#vetVendasMensais +
-                "\nFornecedor: " + this.#fornecedor.razaoSocial +
-                "\nCNPJ: " + this.#fornecedor.cnpj
-        )
-    }
-
+    //---------Métodos Getters---------
     get descricao(){
         return this.#descricao;
     }
 
-    get preco(){
-        return this.#preco;
+    get precoCompra(){
+        return this.#precoCompra;
+    }
+
+    get precoVenda(){
+        return this.#precoVenda;
     }
 
     get qtdEstoque(){
@@ -43,12 +40,17 @@ export class Produto {
         return this.#vetVendasMensais;
     }
 
+    //---------Métodos Setters---------
     set descricao(descricao){
         this.#descricao = descricao;
     }
 
-    set preco(preco){
-        this.#preco = preco.toFixed(2);
+    set precoCompra(precoCompra){
+        this.#precoCompra = precoCompra.toFixed(2);
+    }
+
+    set precoVenda(precoVenda){
+        this.#precoVenda = precoVenda.toFixed(2);
     }
 
     set qtdEstoque(qtdEstoque){
@@ -58,22 +60,28 @@ export class Produto {
     set vetVendasMensais(vetVendasMensais){
         this.#vetVendasMensais = vetVendasMensais;
     }
+
+    
+    toString(){
+        return ("Descrição:" + this.#descricao +
+                "\nPreço de Compra: R$" + this.#precoCompra +
+                "\nPreço de Venda: R$" + this.#precoVenda +
+                "\nQuantidade em Estoque: " + this.#qtdEstoque +
+                "\nVendas Mensais do Ano: " + this.#vetVendasMensais +
+                "\nFornecedor: " + this.#fornecedor.razaoSocial +
+                "\nCNPJ: " + this.#fornecedor.cnpj
+        )
+    }
+
+    stringify(){
+        return '\n{' + 
+                '\n\t"descricao" : "' + this.#descricao + '" ,' + 
+                '\n\t"precoCompra" : "' + this.#precoCompra + '" ,' +
+                '\n\t"precoVenda" : "' + this.#precoVenda + '" ,' +
+                '\n\t"qtdEstoque" : "' + this.#qtdEstoque + '" ,' +
+                '\n\t"vetVendasMensais" : "' + this.#vetVendasMensais + '" ,' +
+                '\n\t"fornecedor" : "' + this.#fornecedor.razaoSocial + '" ,' +
+                '\n\t"cnpj" : "' + this.#fornecedor.cnpj + '"' +
+                '\n}'; 
+    }
 }
-
-//TESTES UTILIZANDO CONSOLE LOG
-
-const produto1 = new Produto("Coca Cola 600ml", 8, 24, [12, 3, 4]);
-const produto2 = new Produto("Pasta de dente Colgate", 5, 11, [1, 5, 0]);
-const produto3 = new Produto("Batata chips Ruffles", 12, 39, [12, 8, 21]);
-
-//Utilizando o método toString em um objeto
-console.log(produto1.toString());
-
-//Conferindo o valor de um atributo através do método get
-console.log(produto2.descricao);
-
-//Alterando valor do atributo preco através do método set
-console.log(produto3.toString()); //Mostrando valor antes da alteração
-produto3.preco = 15;
-console.log(produto3.preco);
-console.log(produto3.toString()); //Mostrando valor após a alteração
