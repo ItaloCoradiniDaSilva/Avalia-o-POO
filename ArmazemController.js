@@ -28,14 +28,14 @@ export class ArmazemController {
 
         if (fornecedor != undefined) {
             let index = this.#vetFornecedores.indexOf(fornecedor);
-            this.#vetFornecedores.splice(index, 1);
+            this.#vetFornecedores.splice((index -1), 1);
             return true;
         }
         return false;
     }
 
     alterarFornecedor(_razaoSocial, _cnpj, _telefone, _endereco, _creditoDisponibilizado) {
-        let fornecedor = this.consultarFornecedor(_cnpj);
+        let fornecedor = this.#consultarFornecedor(_cnpj);
         if (fornecedor != undefined) {
             fornecedor.razaoSocial = _razaoSocial;
             fornecedor.cnpj = _cnpj;
@@ -47,7 +47,7 @@ export class ArmazemController {
         return false;
     }
 
-    consultarFornecedor(cnpj){
+    #consultarFornecedor(cnpj){
         return this.#vetFornecedores.find(
             fornecedor => fornecedor.cnpj === cnpj
         );
@@ -83,5 +83,19 @@ export class ArmazemController {
         return vetObjLiteraisFornecedores;
     }
 
+    //---------Métodos para Produto---------
+    cadastrarProduto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor) {
+        let produto = this.#consultarProduto(_descricao);
+        if (produto == undefined) {
+            this.#vetProdutos.push(new Produto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor));
+            return true;
+        }
+        return false;
+    }
 
+    #consultarProduto(descricao) {
+        return this.#vetProdutos.find(
+            produto => produto.descricao === descricao
+        );
+    }
 }

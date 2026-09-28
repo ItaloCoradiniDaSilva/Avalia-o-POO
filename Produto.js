@@ -56,11 +56,6 @@ export class Produto {
     set qtdEstoque(qtdEstoque){
         this.#qtdEstoque = qtdEstoque;
     }
-
-    set vetVendasMensais(vetVendasMensais){
-        this.#vetVendasMensais = vetVendasMensais;
-    }
-
     
     toString(){
         return ("Descrição:" + this.#descricao +
