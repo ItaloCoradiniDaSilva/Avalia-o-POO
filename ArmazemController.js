@@ -10,9 +10,6 @@ export class ArmazemController {
         this.#vetFornecedores = [];
     }
 
-    carregarDados() {
-    }
-
     //---------Métodos para Fornecedor---------
     cadastrarFornecedor(_razaoSocial, _cnpj, _telefone, _endereco, _creditoDisponibilizado) {
         let fornecedor = this.#consultarFornecedor(_cnpj);
@@ -190,5 +187,120 @@ export class ArmazemController {
             faturamentoMes += produto.vetVendasMensais[_mes - 1] * produto.precoVenda;
         });
         return faturamentoMes;
+    }
+
+    listarProdutos() {
+        var vetObjLiteraisProdutos = [];
+        this.#vetProdutos.forEach(produto => {
+            vetObjLiteraisProdutos.push({
+                descricao: produto.descricao,
+                precoCompra: produto.precoCompra,
+                precoVenda: produto.precoVenda,
+                qtdEstoque: produto.qtdEstoque,
+                vetVendasMensais: produto.vetVendasMensais,
+                fornecedor: {
+                    razaoSocial: produto.fornecedor.razaoSocial,
+                    cnpj: produto.fornecedor.cnpj
+                }
+            });
+        });
+        return vetObjLiteraisProdutos;
+    }
+
+    listarTabelaVendasAnual(){
+        var vetObjLiteraisProdutos = [];
+        this.#vetProdutos.forEach(produto => {
+            vetObjLiteraisProdutos.push({
+                descricao: produto.descricao,
+                vendasMensais: produto.vetVendasMensais
+            });
+        });
+    }
+
+    listarProdutosPorFornecedor(cnpj) {
+        var vetObjLiteraisProdutos = [];
+        this.#vetProdutos.forEach(produto => {
+            if (produto.fornecedor.cnpj === cnpj) {
+                vetObjLiteraisProdutos.push({
+                    descricao: produto.descricao,
+                    precoCompra: produto.precoCompra,
+                    precoVenda: produto.precoVenda,
+                    qtdEstoque: produto.qtdEstoque,
+                    vetVendasMensais: produto.vetVendasMensais,
+                    fornecedor: {
+                        razaoSocial: produto.fornecedor.razaoSocial
+                    }
+                });
+            }
+        });
+        return vetObjLiteraisProdutos;
+    }
+
+    //---------Métodos para Carregar e Salvar Dados---------
+    
+    carregadorDados() {
+        let vetProdutosSalvos = [];
+        let vetFornecedoresSalvos = [];
+
+        if (localStorage.hasOwnProperty("produtosSalvos")) {
+            let strJSONVetProdutos = localStorage.getItem("produtosSalvos");
+            vetProdutosSalvos = JSON.parse(strJSONVetProdutos);
+        }
+        if (localStorage.hasOwnProperty("fornecedoresSalvos")) {
+            let strJSONVetFornecedores = localStorage.getItem("fornecedoresSalvos");
+            vetFornecedoresSalvos = JSON.parse(strJSONVetFornecedores);
+        }
+        if (vetProdutosSalvos.length > 0) {
+            vetProdutosSalvos.forEach((objLitProduto) => {
+                let objFornecedor = this.#vetFornecedores.find((fornecedor) =>
+                    fornecedor.cnpj == objLitProduto.fornecedor.cnpj
+                );
+                if (objFornecedor != undefined) {
+                    this.#vetProdutos.push(new Produto(objLitProduto.descricao, objLitProduto.precoCompra, objLitProduto.precoVenda, objLitProduto.qtdEstoque, objLitProduto.vetVendasMensais, objFornecedor));
+                }
+            });
+        } else {
+            this.#vetProdutos = [
+                new Produto("Produto 1", 10.0, 15.0, 100, [], this.#vetFornecedores[0]),
+                new Produto("Produto 2", 20.0, 25.0, 50, [], this.#vetFornecedores[1])
+            ];
+        }
+
+        if (localStorage.hasOwnProperty("fornecedoresSalvos")) {
+            let strJSONVetFornecedores = localStorage.getItem("fornecedoresSalvos");
+            vetFornecedoresSalvos = JSON.parse(strJSONVetFornecedores);
+        }
+        if (vetFornecedoresSalvos.length > 0) {
+            vetFornecedoresSalvos.forEach((objLitFornecedor) => {
+                this.#vetFornecedores.push(new Fornecedor(objLitFornecedor.razaoSocial, objLitFornecedor.cnpj, objLitFornecedor.telefone, objLitFornecedor.endereco, objLitFornecedor.creditoDisponibilizado));
+            });
+        } else {
+            this.#vetFornecedores = [
+                new Fornecedor("Fornecedor 1", "12.345.678/0001-90", "(11)99999-9999", "Endereço 1", 10000.0),
+                new Fornecedor("Fornecedor 2", "98.765.432/0001-90", "(22)88888-8888", "Endereço 2", 15000.0)
+            ];
+        }
+    }
+      
+    salvarLocalStorage() {
+        if (this.#vetProdutos.length > 0) {
+            var strJSONVetProdutos = "[" + this.#vetProdutos[0].stringify();
+            for (let i = 1; i < this.#vetProdutos.length; i++) {
+                strJSONVetProdutos += "," + this.#vetProdutos[i].stringify();
+            }
+            strJSONVetProdutos += "\n]";
+
+            localStorage.setItem("produtosSalvos", strJSONVetProdutos)
+        }
+
+        if (this.#vetFornecedores.length > 0) {
+            var strJSONVetFornecedores = "[" + this.#vetFornecedores[0].stringify();
+            for (let i = 1; i < this.#vetFornecedores.length; i++) {
+                strJSONVetFornecedores += "," + this.#vetFornecedores[i].stringify();
+            }
+            strJSONVetFornecedores += "\n]";
+
+            localStorage.setItem("fornecedoresSalvos", strJSONVetFornecedores)
+        }
     }
 }
