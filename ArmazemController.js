@@ -12,7 +12,7 @@ export class ArmazemController {
 
     //---------Métodos para Fornecedor---------
     cadastrarFornecedor(_razaoSocial, _cnpj, _telefone, _endereco, _creditoDisponibilizado) {
-        let fornecedor = this.#consultarFornecedor(_cnpj);
+        let fornecedor = this.consultarFornecedor(_cnpj);
         if (fornecedor == undefined) {
             this.#vetFornecedores.push(new Fornecedor(_razaoSocial, _cnpj, _telefone, _endereco, _creditoDisponibilizado));
             return true;
@@ -21,7 +21,7 @@ export class ArmazemController {
     }
 
     excluirFornecedor(cnpj) {
-        let fornecedor = this.#consultarFornecedor(cnpj);
+        let fornecedor = this.consultarFornecedor(cnpj);
 
         if (fornecedor != undefined) {
             let index = this.#vetFornecedores.indexOf(fornecedor);
@@ -32,7 +32,7 @@ export class ArmazemController {
     }
 
     alterarFornecedor(_razaoSocial, _cnpj, _telefone, _endereco, _creditoDisponibilizado) {
-        let fornecedor = this.#consultarFornecedor(_cnpj);
+        let fornecedor = this.consultarFornecedor(_cnpj);
         if (fornecedor != undefined) {
             fornecedor.razaoSocial = _razaoSocial;
             fornecedor.cnpj = _cnpj;
@@ -44,7 +44,7 @@ export class ArmazemController {
         return false;
     }
 
-    #consultarFornecedor(cnpj){
+    consultarFornecedor(cnpj){
         return this.#vetFornecedores.find(
             fornecedor => fornecedor.cnpj === cnpj
         );
@@ -134,11 +134,11 @@ export class ArmazemController {
         if (produto != undefined) {
             produto.qtdEstoque += _qtdComprada;
             if (_fornecedor !== "") {
-                let fornecedor = this.#consultarFornecedor(_fornecedor.cnpj);
+                let fornecedor = this.consultarFornecedor(_fornecedor.cnpj);
                 if (fornecedor !== undefined) {
                     produto.fornecedor = _fornecedor;
                 } else {
-                    return resultado = 2; // Fornecedor não encontrado
+                    return 2; // Fornecedor não encontrado
                 }
             }
             if (_precoCompra !== 0) {
@@ -149,23 +149,27 @@ export class ArmazemController {
             }
             let totalCompra = produto.precoCompra * _qtdComprada;
             if (totalCompra > produto.fornecedor.creditoDisponibilizado) {
-                return resultado = 3; // Crédito insuficiente
+                return 3; // Crédito insuficiente
             }
-            return resultado = 0; // Compra realizada com sucesso
+            return 0; // Compra realizada com sucesso
         }
-        return resultado = 1; // Produto não encontrado
+        return 1; // Produto não encontrado
     }
 
     venderProduto(_descricao, _qtdVendida) {
         let produto = this.#consultarProduto(_descricao);
         if (produto != undefined) {
             if (_qtdVendida > produto.qtdEstoque) {
-                return resultado = 2; // Estoque insuficiente
+                return {estoqueAtual: produto.qtdEstoque,
+                        codigo: undefined}; // Estoque insuficiente
             }
             produto.qtdEstoque -= _qtdVendida;
-            return resultado = 0; // Venda realizada com sucesso
+            return {estoqueAtual: produto.qtdEstoque,
+                    codigo: "SUCESSO",
+                    totalVenda: _qtdVendida * produto.precoVenda}; // Venda realizada com sucesso
         }
-        return resultado = 1; // Produto não encontrado
+        return {estoqueAtual: 0,
+                codigo: "PRODUTO_NAO_ENCONTRADO"}; // Produto não encontrado
     }
 
     consultarTotalVendasAno(_descricao) {
@@ -176,9 +180,10 @@ export class ArmazemController {
             for (let i = 0; i < produto.vetVendasMensais.length; i++) {
                 totalVendasAno += produto.vetVendasMensais[i];
             }
-            return totalVendasAno;
+            return {totalVendas: totalVendasAno,
+                    descricao: produto.descricao
+            };
         }
-        return false;
     }
 
     consultarFaturamentoMes(_mes) {
@@ -197,9 +202,9 @@ export class ArmazemController {
                 precoCompra: p.precoCompra,
                 precoVenda: p.precoVenda,
                 qtdEstoque: p.qtdEstoque,
-                cnpjForn: p.fornecedor,
-                nomeForn: p.fornecedor,
-                totalAno: this.consultarTotalVendasAno(p.descricao)
+                cnpjForn: p.fornecedor.cnpj,
+                nomeForn: p.fornecedor.razaoSocial,
+                totalAno: p.totalVendasAno
             });
         });
         return vetObjLiteraisProdutos;
@@ -273,8 +278,8 @@ export class ArmazemController {
             });
         } else {
             this.#vetProdutos = [
-                new Produto("Produto 1", 10.0, 15.0, 100, [], this.#vetFornecedores[0]),
-                new Produto("Produto 2", 20.0, 25.0, 50, [], this.#vetFornecedores[1])
+                new Produto("Produto 1", 10.0, 15.0, 100, [5, 15, 12, 3, 8, 10, 14, 18, 20, 25, 30, 35], this.#vetFornecedores[0]),
+                new Produto("Produto 2", 20.0, 25.0, 50, [2, 6, 9, 12, 15, 18, 22, 26, 30, 35, 40, 45], this.#vetFornecedores[1])
             ];
         }
     }

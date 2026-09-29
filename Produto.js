@@ -7,16 +7,20 @@ export class Produto {
     #qtdEstoque;
     #vetVendasMensais;
     #fornecedor;
+    #totalVendasAno;
 
-    constructor(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor = undefined){
+    constructor(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], _fornecedor = undefined){
         this.#descricao = _descricao;
         this.#precoCompra = _precoCompra.toFixed(2);
         this.#precoVenda = _precoVenda.toFixed(2);
         this.#qtdEstoque = _qtdEstoque;
-        this.#vetVendasMensais = _vetVendasMensais;
+        if (_vetVendasMensais.length == 12) {
+            this.#vetVendasMensais = _vetVendasMensais;
+        }
         if (_fornecedor != undefined && _fornecedor instanceof Fornecedor) {
             this.#fornecedor = _fornecedor;
         }
+        this.#totalVendasAno = 0;
     }
 
     //---------Métodos Getters---------
@@ -40,6 +44,19 @@ export class Produto {
         return this.#vetVendasMensais.splice();
     }
 
+    get fornecedor(){
+        return this.#fornecedor;
+    }
+
+    get totalVendasAno(){
+        let totalVendasAno = 0;
+        for (let i = 0; i < this.#vetVendasMensais.length; i++) {
+                totalVendasAno += this.#vetVendasMensais[i];
+            }
+        
+        return this.#totalVendasAno = totalVendasAno;
+    }
+
     //---------Métodos Setters---------
     set descricao(descricao){
         this.#descricao = descricao;
@@ -56,6 +73,7 @@ export class Produto {
     set qtdEstoque(qtdEstoque){
         this.#qtdEstoque = qtdEstoque;
     }
+
     
     toString(){
         return ("Descrição:" + this.#descricao +

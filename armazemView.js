@@ -420,7 +420,7 @@ function executarOpcaoFornecedor() {
                         `CNPJ: ${dados.cnpj}\n` +
                         `Telefone: ${dados.telefone}\n` +
                         `Endereço: ${dados.endereco}\n` +
-                        `Crédito Disponibilizado: R$ ${dados.creditoDisp.toFixed(2)}`,
+                        `Crédito Disponibilizado: R$ ${dados.creditoDisponibilizado}`,
                         "blue"
                     );
                 } else {
