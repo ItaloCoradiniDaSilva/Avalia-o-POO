@@ -24,7 +24,7 @@ export class ArmazemController {
     }
 
     excluirFornecedor(cnpj) {
-        let fornecedor = this.consultarFornecedor(cnpj);
+        let fornecedor = this.#consultarFornecedor(cnpj);
 
         if (fornecedor != undefined) {
             let index = this.#vetFornecedores.indexOf(fornecedor);
@@ -159,5 +159,36 @@ export class ArmazemController {
         return resultado = 1; // Produto não encontrado
     }
 
+    venderProduto(_descricao, _qtdVendida) {
+        let produto = this.#consultarProduto(_descricao);
+        if (produto != undefined) {
+            if (_qtdVendida > produto.qtdEstoque) {
+                return resultado = 2; // Estoque insuficiente
+            }
+            produto.qtdEstoque -= _qtdVendida;
+            return resultado = 0; // Venda realizada com sucesso
+        }
+        return resultado = 1; // Produto não encontrado
+    }
 
+    consultarTotalVendasAno(_descricao) {
+        let produto = this.#consultarProduto(_descricao);
+        if (produto != undefined) {
+            let totalVendasAno = 0;
+
+            for (let i = 0; i < produto.vetVendasMensais.length; i++) {
+                totalVendasAno += produto.vetVendasMensais[i];
+            }
+            return totalVendasAno;
+        }
+        return false;
+    }
+
+    consultarFaturamentoMes(_mes) {
+        let faturamentoMes = 0;
+        this.#vetProdutos.forEach(produto => {
+            faturamentoMes += produto.vetVendasMensais[_mes - 1] * produto.precoVenda;
+        });
+        return faturamentoMes;
+    }
 }
