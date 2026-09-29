@@ -82,7 +82,7 @@ export class ArmazemController {
 
     //---------Métodos para Produto---------
     cadastrarProduto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor) {
-        let produto = this.#consultarProduto(_descricao);
+        let produto = this.consultarProduto(_descricao);
         if (produto == undefined) {
             this.#vetProdutos.push(new Produto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor));
             return true;
@@ -90,14 +90,14 @@ export class ArmazemController {
         return false;
     }
 
-    #consultarProduto(descricao) {
+    consultarProduto(descricao) {
         return this.#vetProdutos.find(
             produto => produto.descricao === descricao
         );
     }
 
     excluirProduto(descricao) {
-        let produto = this.#consultarProduto(descricao);
+        let produto = this.consultarProduto(descricao);
         if (produto != undefined) {
             let index = this.#vetProdutos.indexOf(produto);
             this.#vetProdutos.splice(index, 1);
@@ -107,7 +107,7 @@ export class ArmazemController {
     }
 
     alterarProduto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor) {
-        let produto = this.#consultarProduto(_descricao);
+        let produto = this.consultarProduto(_descricao);
         if (produto != undefined) {
             produto.descricao = _descricao;
             produto.precoCompra = _precoCompra;
@@ -121,7 +121,7 @@ export class ArmazemController {
     }
 
     alterarVendaMes(_descricao, _mes, _qtdVendas) {
-        let produto = this.#consultarProduto(_descricao);
+        let produto = this.consultarProduto(_descricao);
         if (produto != undefined) {
             produto.vetVendasMensais[_mes - 1] = _qtdVendas;
             return true;
@@ -130,7 +130,7 @@ export class ArmazemController {
     }
 
     comprarProduto(_descricao, _qtdComprada, _precoCompra = 0, _precoVenda = 0, _fornecedor = "") {
-        let produto = this.#consultarProduto(_descricao);
+        let produto = this.consultarProduto(_descricao);
         if (produto != undefined) {
             produto.qtdEstoque += _qtdComprada;
             if (_fornecedor !== "") {
@@ -157,7 +157,7 @@ export class ArmazemController {
     }
 
     venderProduto(_descricao, _qtdVendida) {
-        let produto = this.#consultarProduto(_descricao);
+        let produto = this.consultarProduto(_descricao);
         if (produto != undefined) {
             if (_qtdVendida > produto.qtdEstoque) {
                 return {estoqueAtual: produto.qtdEstoque,
@@ -173,7 +173,7 @@ export class ArmazemController {
     }
 
     consultarTotalVendasAno(_descricao) {
-        let produto = this.#consultarProduto(_descricao);
+        let produto = this.consultarProduto(_descricao);
         if (produto != undefined) {
             let totalVendasAno = 0;
 

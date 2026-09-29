@@ -160,7 +160,7 @@ function executarOpcaoProduto() {
         case "Cadastrar":
             if (descricao == "" || precoCompra == 0) {
                 exibirMensagem("Os campos Produto e Preço de Compra são obrigatórios!", "red");
-            } else if (controller.cadastrarProduto(descricao, precoCompra, qtd)) {
+            } else if (controller.cadastrarProduto(descricao, precoCompra, precoVenda, qtd)) {
                 exibirMensagem(`Produto "${descricao}" cadastrado com sucesso!`, "blue");
             } else {
                 exibirMensagem(`Erro! Já existe um produto com a descrição "${descricao}"!`, "red");
