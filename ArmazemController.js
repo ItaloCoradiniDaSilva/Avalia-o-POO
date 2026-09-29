@@ -202,8 +202,8 @@ export class ArmazemController {
                 precoCompra: p.precoCompra,
                 precoVenda: p.precoVenda,
                 qtdEstoque: p.qtdEstoque,
-                cnpjForn: p.fornecedor.cnpj,
-                nomeForn: p.fornecedor.razaoSocial,
+                cnpjForn: p.fornecedor !== undefined ? p.fornecedor.cnpj : "",
+                nomeForn: p.fornecedor !== undefined ? p.fornecedor.razaoSocial : "",
                 totalAno: p.totalVendasAno
             });
         });
@@ -212,15 +212,17 @@ export class ArmazemController {
 
     listarTabelaVendasAnual(){
         var vetObjLiteraisProdutos = [];
-        this.#vetProdutos.forEach(produto => {
+        this.#vetProdutos.forEach(p => {
             vetObjLiteraisProdutos.push({
-                descricao: produto.descricao,
-                vendasMensais: produto.vetVendasMensais
+                descricao: p.descricao,
+                vendasMensais: p.vetVendasMensais,
+                totalAno: p.totalVendasAno
             });
         });
+        return vetObjLiteraisProdutos;
     }
 
-    listarProdutosPorFornecedor(cnpj) {
+    listarProdutosFornecedor(cnpj) {
         var vetObjLiteraisProdutos = [];
         this.#vetProdutos.forEach(produto => {
             if (produto.fornecedor.cnpj === cnpj) {
@@ -230,9 +232,9 @@ export class ArmazemController {
                     precoVenda: produto.precoVenda,
                     qtdEstoque: produto.qtdEstoque,
                     vetVendasMensais: produto.vetVendasMensais,
-                    fornecedor: {
-                        razaoSocial: produto.fornecedor.razaoSocial
-                    }
+                    cnpjForn: produto.fornecedor.cnpj,
+                    nomeForn: produto.fornecedor.razaoSocial,
+                    totalAno: produto.totalVendasAno
                 });
             }
         });
