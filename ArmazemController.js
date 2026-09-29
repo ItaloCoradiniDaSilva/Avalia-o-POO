@@ -191,17 +191,15 @@ export class ArmazemController {
 
     listarProdutos() {
         var vetObjLiteraisProdutos = [];
-        this.#vetProdutos.forEach(produto => {
+        this.#vetProdutos.forEach(p => {
             vetObjLiteraisProdutos.push({
-                descricao: produto.descricao,
-                precoCompra: produto.precoCompra,
-                precoVenda: produto.precoVenda,
-                qtdEstoque: produto.qtdEstoque,
-                vetVendasMensais: produto.vetVendasMensais,
-                fornecedor: {
-                    razaoSocial: produto.fornecedor.razaoSocial,
-                    cnpj: produto.fornecedor.cnpj
-                }
+                descricao: p.descricao,
+                precoCompra: p.precoCompra,
+                precoVenda: p.precoVenda,
+                qtdEstoque: p.qtdEstoque,
+                cnpjForn: p.fornecedor,
+                nomeForn: p.fornecedor,
+                totalAno: this.consultarTotalVendasAno(p.descricao)
             });
         });
         return vetObjLiteraisProdutos;
@@ -238,10 +236,24 @@ export class ArmazemController {
 
     //---------Métodos para Carregar e Salvar Dados---------
     
-    carregadorDados() {
+    carregarDados() {
         let vetProdutosSalvos = [];
         let vetFornecedoresSalvos = [];
-
+        
+        if (localStorage.hasOwnProperty("fornecedoresSalvos")) {
+            let strJSONVetFornecedores = localStorage.getItem("fornecedoresSalvos");
+            vetFornecedoresSalvos = JSON.parse(strJSONVetFornecedores);
+        }
+        if (vetFornecedoresSalvos.length > 0) {
+            vetFornecedoresSalvos.forEach((objLitFornecedor) => {
+                this.#vetFornecedores.push(new Fornecedor(objLitFornecedor.razaoSocial, objLitFornecedor.cnpj, objLitFornecedor.telefone, objLitFornecedor.endereco, objLitFornecedor.creditoDisponibilizado));
+            });
+        } else {
+            this.#vetFornecedores = [
+                new Fornecedor("Fornecedor 1", "12.345.678/0001-90", "(11)99999-9999", "Endereço 1", 10000.0),
+                new Fornecedor("Fornecedor 2", "98.765.432/0001-90", "(22)88888-8888", "Endereço 2", 15000.0)
+            ];
+        }
         if (localStorage.hasOwnProperty("produtosSalvos")) {
             let strJSONVetProdutos = localStorage.getItem("produtosSalvos");
             vetProdutosSalvos = JSON.parse(strJSONVetProdutos);
@@ -263,21 +275,6 @@ export class ArmazemController {
             this.#vetProdutos = [
                 new Produto("Produto 1", 10.0, 15.0, 100, [], this.#vetFornecedores[0]),
                 new Produto("Produto 2", 20.0, 25.0, 50, [], this.#vetFornecedores[1])
-            ];
-        }
-
-        if (localStorage.hasOwnProperty("fornecedoresSalvos")) {
-            let strJSONVetFornecedores = localStorage.getItem("fornecedoresSalvos");
-            vetFornecedoresSalvos = JSON.parse(strJSONVetFornecedores);
-        }
-        if (vetFornecedoresSalvos.length > 0) {
-            vetFornecedoresSalvos.forEach((objLitFornecedor) => {
-                this.#vetFornecedores.push(new Fornecedor(objLitFornecedor.razaoSocial, objLitFornecedor.cnpj, objLitFornecedor.telefone, objLitFornecedor.endereco, objLitFornecedor.creditoDisponibilizado));
-            });
-        } else {
-            this.#vetFornecedores = [
-                new Fornecedor("Fornecedor 1", "12.345.678/0001-90", "(11)99999-9999", "Endereço 1", 10000.0),
-                new Fornecedor("Fornecedor 2", "98.765.432/0001-90", "(22)88888-8888", "Endereço 2", 15000.0)
             ];
         }
     }

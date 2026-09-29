@@ -8,7 +8,7 @@ export class Produto {
     #vetVendasMensais;
     #fornecedor;
 
-    constructor(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor){
+    constructor(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor = undefined){
         this.#descricao = _descricao;
         this.#precoCompra = _precoCompra.toFixed(2);
         this.#precoVenda = _precoVenda.toFixed(2);

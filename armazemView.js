@@ -504,8 +504,8 @@ function criarTabelaProdutos(lista) {
         const tr = document.createElement("tr");
         [
             p.descricao,
-            `R$ ${p.precoCompra.toFixed(2)}`,
-            `R$ ${p.precoVenda.toFixed(2)}`,
+            `R$ ${p.precoCompra}`,
+            `R$ ${p.precoVenda}`,
             p.qtdEstoque,
             p.totalAno,
             p.cnpjForn ? `${p.cnpjForn} - ${p.nomeForn}` : "—"
