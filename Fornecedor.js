@@ -40,6 +40,10 @@ export class Fornecedor {
         this.#razaoSocial = razaoSocial;
     }
 
+    set cnpj(cnpj){
+        this.#cnpj = cnpj;
+    }
+
     set telefone(telefone){
         this.#telefone = telefone;
     }
