@@ -22,13 +22,18 @@ export class ArmazemController {
 
     excluirFornecedor(cnpj) {
         let fornecedor = this.consultarFornecedor(cnpj);
+        let produtosAssociados = this.listarProdutosFornecedor(cnpj);
 
         if (fornecedor != undefined) {
-            let index = this.#vetFornecedores.indexOf(fornecedor);
-            this.#vetFornecedores.splice(index, 1);
-            return true;
+            if (produtosAssociados.length > 0) {
+                return "FORNECEDOR_COM_PRODUTOS"; // Não é possível excluir o fornecedor, pois existem produtos associados a ele
+            } else {
+                let index = this.#vetFornecedores.indexOf(fornecedor);
+                this.#vetFornecedores.splice(index, 1);
+                return "SUCESSO"; // Fornecedor excluído com sucesso
+            }
         }
-        return false;
+        return "FORNECEDOR_NAO_ENCONTRADO"; // Fornecedor não encontrado
     }
 
     alterarFornecedor(_razaoSocial, _cnpj, _telefone, _endereco, _creditoDisponibilizado) {
