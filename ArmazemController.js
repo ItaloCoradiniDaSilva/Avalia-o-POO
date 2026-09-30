@@ -177,6 +177,22 @@ export class ArmazemController {
                 codigo: "PRODUTO_NAO_ENCONTRADO"}; // Produto não encontrado
     }
 
+    consultarMaisVendidoMes(_mes) {
+        let maisVendido = null;
+        let maiorQtdVendida = 0;
+        this.#vetProdutos.forEach(produto => {
+            let vendasMes = produto.vetVendasMensais[_mes - 1];
+            if (vendasMes > maiorQtdVendida) {
+                maiorQtdVendida = vendasMes;
+                maisVendido = produto;
+            }
+        });
+        return {
+            descricao: maisVendido.descricao,
+            qtdVendida: maiorQtdVendida
+        };
+    }
+
     consultarTotalVendasAno(_descricao) {
         let produto = this.consultarProduto(_descricao);
         if (produto != undefined) {

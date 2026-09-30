@@ -215,8 +215,8 @@ function executarOpcaoProduto() {
                 if (dados != undefined) {
                     exibirMensagem(
                         `Descrição: ${dados.descricao}\n` +
-                        `Preço de Compra: R$ ${dados.precoCompra.toFixed(2)}\n` +
-                        `Preço de Venda: R$ ${dados.precoVenda.toFixed(2)}\n` +
+                        `Preço de Compra: R$ ${dados.precoCompra}\n` +
+                        `Preço de Venda: R$ ${dados.precoVenda}\n` +
                         `Quantidade em Estoque: ${dados.qtdEstoque}\n` +
                         `Fornecedor: ${dados.cnpjForn ? dados.cnpjForn + " - " + dados.nomeForn : "Não vinculado"}`,
                         "blue"
