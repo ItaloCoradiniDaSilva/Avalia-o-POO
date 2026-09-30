@@ -111,15 +111,22 @@ export class ArmazemController {
         return false;
     }
 
-    alterarProduto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor) {
+    alterarProduto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _fornecedor) {
         let produto = this.consultarProduto(_descricao);
         if (produto != undefined) {
             produto.descricao = _descricao;
-            produto.precoCompra = _precoCompra;
-            produto.precoVenda = _precoVenda;
-            produto.qtdEstoque = _qtdEstoque;
-            produto.vetVendasMensais = _vetVendasMensais;
-            produto.fornecedor = _fornecedor;
+            if (_precoCompra !== 0) {
+                produto.precoCompra = _precoCompra;
+            }
+            if (_precoVenda !== 0) {
+                produto.precoVenda = _precoVenda;
+            }
+            if(qtdEstoque !== 0) {
+                produto.qtdEstoque = _qtdEstoque;
+            }
+            if (_fornecedor !== undefined && _fornecedor instanceof Fornecedor) {
+                produto.fornecedor = _fornecedor;
+            }
             return true;
         }
         return false;
@@ -128,10 +135,13 @@ export class ArmazemController {
     alterarVendaMes(_descricao, _mes, _qtdVendas) {
         let produto = this.consultarProduto(_descricao);
         if (produto != undefined) {
-            produto.vetVendasMensais[_mes - 1] = _qtdVendas;
-            return true;
+            if (_mes < 1 || _mes > 12) {
+                return "MES_INVALIDO"; // Mês inválido
+            }
+            produto.alterarVendaMes(_mes, _qtdVendas);
+            return "SUCESSO";
         }
-        return false;
+        return "PRODUTO_NAO_ENCONTRADO";
     }
 
     comprarProduto(_descricao, _qtdComprada, _precoCompra = 0, _precoVenda = 0, _fornecedor = "") {

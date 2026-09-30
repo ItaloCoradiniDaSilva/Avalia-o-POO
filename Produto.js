@@ -74,6 +74,15 @@ export class Produto {
         this.#qtdEstoque = qtdEstoque;
     }
 
+    set vetVendasMensais(vetVendasMensais){
+        if (vetVendasMensais.length == 12) {
+            this.#vetVendasMensais = vetVendasMensais;
+        }
+    }
+
+    alterarVendaMes(mes, qtdVendas) {
+        this.#vetVendasMensais[mes - 1] = qtdVendas;
+    }
     
     toString(){
         return ("Descrição:" + this.#descricao +
