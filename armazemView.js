@@ -56,6 +56,7 @@ selectProduto.addEventListener("change", () => {
             habilitar(inPrecoCompra, "Preço de Compra");
             habilitar(inPrecoVenda,  "Preço de Venda");
             habilitar(inQtd,         "Quantidade em estoque");
+            habilitar(inFornecedor, "CNPJ do Fornecedor");
             break;
         case "Excluir":
         case "Consultar":
@@ -160,7 +161,7 @@ function executarOpcaoProduto() {
         case "Cadastrar":
             if (descricao == "" || precoCompra == 0) {
                 exibirMensagem("Os campos Produto e Preço de Compra são obrigatórios!", "red");
-            } else if (controller.cadastrarProduto(descricao, precoCompra, precoVenda, qtd)) {
+            } else if (controller.cadastrarProduto(descricao, precoCompra, precoVenda, qtd, cnpjForn)) {
                 exibirMensagem(`Produto "${descricao}" cadastrado com sucesso!`, "blue");
             } else {
                 exibirMensagem(`Erro! Já existe um produto com a descrição "${descricao}"!`, "red");

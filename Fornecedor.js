@@ -10,7 +10,7 @@ export class Fornecedor {
         this.#cnpj = _cnpj;
         this.#telefone = _telefone;
         this.#endereco = _endereco;
-        this.#creditoDisponibilizado = _creditoDisponibilizado.toFixed(2);
+        this.#creditoDisponibilizado = _creditoDisponibilizado;
     }   
 
     /*-------MÉTODOS GETTERS-------*/
@@ -37,19 +37,27 @@ export class Fornecedor {
 
     /*-------MÉTODOS SETTERS-------*/
     set razaoSocial(razaoSocial){
-        this.#razaoSocial = razaoSocial;
+        if (razaoSocial !== "") {
+            this.#razaoSocial = razaoSocial;
+        }
     }
 
     set cnpj(cnpj){
-        this.#cnpj = cnpj;
+        if (cnpj !== "") {
+            this.#cnpj = cnpj;
+        }
     }
 
     set telefone(telefone){
-        this.#telefone = telefone;
+        if (telefone !== "") {
+            this.#telefone = telefone;
+        }
     }
 
     set endereco(endereco){
-        this.#endereco = endereco;
+        if (endereco !== "") {
+            this.#endereco = endereco;
+        }
     }
 
     set creditoDisponibilizado(creditoDisponibilizado){

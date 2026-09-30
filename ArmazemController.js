@@ -15,6 +15,7 @@ export class ArmazemController {
         let fornecedor = this.consultarFornecedor(_cnpj);
         if (fornecedor == undefined) {
             this.#vetFornecedores.push(new Fornecedor(_razaoSocial, _cnpj, _telefone, _endereco, _creditoDisponibilizado));
+            this.salvarLocalStorage();
             return true;
         }
         return false;
@@ -30,20 +31,21 @@ export class ArmazemController {
             } else {
                 let index = this.#vetFornecedores.indexOf(fornecedor);
                 this.#vetFornecedores.splice(index, 1);
+                this.salvarLocalStorage();
                 return "SUCESSO"; // Fornecedor excluído com sucesso
             }
         }
         return "FORNECEDOR_NAO_ENCONTRADO"; // Fornecedor não encontrado
     }
 
-    alterarFornecedor(_razaoSocial, _cnpj, _telefone, _endereco, _creditoDisponibilizado) {
+    alterarFornecedor(_cnpj, _razaoSocial, _telefone, _endereco, _creditoDisponibilizado) {
         let fornecedor = this.consultarFornecedor(_cnpj);
         if (fornecedor != undefined) {
             fornecedor.razaoSocial = _razaoSocial;
-            fornecedor.cnpj = _cnpj;
             fornecedor.telefone = _telefone;
             fornecedor.endereco = _endereco;
             fornecedor.creditoDisponibilizado = _creditoDisponibilizado;
+            this.salvarLocalStorage();
             return true;
         }
         return false;
@@ -86,11 +88,15 @@ export class ArmazemController {
     }
 
     //---------Métodos para Produto---------
-    cadastrarProduto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor) {
+    cadastrarProduto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _fornecedor) {
         let produto = this.consultarProduto(_descricao);
+        let fornecedor = this.consultarFornecedor(_fornecedor);
         if (produto == undefined) {
-            this.#vetProdutos.push(new Produto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais, _fornecedor));
-            return true;
+            if (fornecedor != undefined) {
+                this.#vetProdutos.push(new Produto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], fornecedor));
+                this.salvarLocalStorage();
+                return true;
+            }
         }
         return false;
     }
@@ -106,13 +112,15 @@ export class ArmazemController {
         if (produto != undefined) {
             let index = this.#vetProdutos.indexOf(produto);
             this.#vetProdutos.splice(index, 1);
+            this.salvarLocalStorage();
             return true;
         }
         return false;
     }
 
-    alterarProduto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _fornecedor) {
+    alterarProduto(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _cnpj) {
         let produto = this.consultarProduto(_descricao);
+        let fornecedor = this.consultarFornecedor(_cnpj);
         if (produto != undefined) {
             produto.descricao = _descricao;
             if (_precoCompra !== 0) {
@@ -121,15 +129,19 @@ export class ArmazemController {
             if (_precoVenda !== 0) {
                 produto.precoVenda = _precoVenda;
             }
-            if(qtdEstoque !== 0) {
+            if(_qtdEstoque !== 0) {
                 produto.qtdEstoque = _qtdEstoque;
             }
-            if (_fornecedor !== undefined && _fornecedor instanceof Fornecedor) {
-                produto.fornecedor = _fornecedor;
+            if (_cnpj !== "") {
+                if(fornecedor === undefined) {
+                    return "FORNECEDOR_NAO_ENCONTRADO"; // Fornecedor não encontrado
+                }
+                produto.fornecedor = fornecedor;
             }
-            return true;
+            this.salvarLocalStorage();
+            return "SUCESSO";
         }
-        return false;
+        return "PRODUTO_NAO_ENCONTRADO";
     }
 
     alterarVendaMes(_descricao, _mes, _qtdVendas) {
@@ -139,6 +151,7 @@ export class ArmazemController {
                 return "MES_INVALIDO"; // Mês inválido
             }
             produto.alterarVendaMes(_mes, _qtdVendas);
+            this.salvarLocalStorage();
             return "SUCESSO";
         }
         return "PRODUTO_NAO_ENCONTRADO";
@@ -151,9 +164,9 @@ export class ArmazemController {
             if (_fornecedor !== "") {
                 let fornecedor = this.consultarFornecedor(_fornecedor.cnpj);
                 if (fornecedor !== undefined) {
-                    produto.fornecedor = _fornecedor;
+                    produto.fornecedor = fornecedor;
                 } else {
-                    return 2; // Fornecedor não encontrado
+                    return "FORNECEDOR_NAO_ENCONTRADO"; // Fornecedor não encontrado
                 }
             }
             if (_precoCompra !== 0) {
@@ -164,11 +177,12 @@ export class ArmazemController {
             }
             let totalCompra = produto.precoCompra * _qtdComprada;
             if (totalCompra > produto.fornecedor.creditoDisponibilizado) {
-                return 3; // Crédito insuficiente
+                return "CREDITO_INSUFICIENTE"; // Crédito insuficiente
             }
-            return 0; // Compra realizada com sucesso
+            this.salvarLocalStorage();
+            return "SUCESSO"; // Compra realizada com sucesso
         }
-        return 1; // Produto não encontrado
+        return "PRODUTO_NAO_ENCONTRADO"; // Produto não encontrado
     }
 
     venderProduto(_descricao, _qtdVendida) {
@@ -179,6 +193,7 @@ export class ArmazemController {
                         codigo: undefined}; // Estoque insuficiente
             }
             produto.qtdEstoque -= _qtdVendida;
+            this.salvarLocalStorage();
             return {estoqueAtual: produto.qtdEstoque,
                     codigo: "SUCESSO",
                     totalVenda: _qtdVendida * produto.precoVenda}; // Venda realizada com sucesso
