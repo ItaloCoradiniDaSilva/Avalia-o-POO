@@ -189,9 +189,11 @@ export class ArmazemController {
     consultarFaturamentoMes(_mes) {
         let faturamentoMes = 0;
         this.#vetProdutos.forEach(produto => {
-            faturamentoMes += produto.vetVendasMensais[_mes - 1] * produto.precoVenda;
+            faturamentoMes += produto.vetVendasMensais[_mes - 1] * Number(produto.precoVenda);
         });
-        return faturamentoMes;
+        return {mes: _mes,
+                faturamento: faturamentoMes
+        };
     }
 
     listarProdutos() {

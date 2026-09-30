@@ -41,7 +41,7 @@ export class Produto {
     }
 
     get vetVendasMensais(){
-        return this.#vetVendasMensais.splice();
+        return this.#vetVendasMensais.slice();
     }
 
     get fornecedor(){
