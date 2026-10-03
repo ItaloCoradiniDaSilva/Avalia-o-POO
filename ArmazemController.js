@@ -5,7 +5,7 @@ export class ArmazemController {
     #vetProdutos;
     #vetFornecedores;
 
-    constructor(){
+    constructor() {
         this.#vetProdutos = [];
         this.#vetFornecedores = [];
     }
@@ -51,13 +51,13 @@ export class ArmazemController {
         return false;
     }
 
-    consultarFornecedor(cnpj){
+    consultarFornecedor(cnpj) {
         return this.#vetFornecedores.find(
             fornecedor => fornecedor.cnpj === cnpj
         );
     }
 
-    listarFornecedores(){
+    listarFornecedores() {
         var vetObjLiteraisFornecedores = [];
         this.#vetFornecedores.forEach(fornecedor => {
             vetObjLiteraisFornecedores.push({
@@ -129,11 +129,11 @@ export class ArmazemController {
             if (_precoVenda !== 0) {
                 produto.precoVenda = _precoVenda;
             }
-            if(_qtdEstoque !== 0) {
+            if (_qtdEstoque !== 0) {
                 produto.qtdEstoque = _qtdEstoque;
             }
             if (_cnpj !== "") {
-                if(fornecedor === undefined) {
+                if (fornecedor === undefined) {
                     return "FORNECEDOR_NAO_ENCONTRADO"; // Fornecedor não encontrado
                 }
                 produto.fornecedor = fornecedor;
@@ -189,17 +189,23 @@ export class ArmazemController {
         let produto = this.consultarProduto(_descricao);
         if (produto != undefined) {
             if (_qtdVendida > produto.qtdEstoque) {
-                return {estoqueAtual: produto.qtdEstoque,
-                        codigo: undefined}; // Estoque insuficiente
+                return {
+                    estoqueAtual: produto.qtdEstoque,
+                    codigo: undefined
+                }; // Estoque insuficiente
             }
             produto.qtdEstoque -= _qtdVendida;
             this.salvarLocalStorage();
-            return {estoqueAtual: produto.qtdEstoque,
-                    codigo: "SUCESSO",
-                    totalVenda: _qtdVendida * produto.precoVenda}; // Venda realizada com sucesso
+            return {
+                estoqueAtual: produto.qtdEstoque,
+                codigo: "SUCESSO",
+                totalVenda: _qtdVendida * produto.precoVenda
+            }; // Venda realizada com sucesso
         }
-        return {estoqueAtual: 0,
-                codigo: "PRODUTO_NAO_ENCONTRADO"}; // Produto não encontrado
+        return {
+            estoqueAtual: 0,
+            codigo: "PRODUTO_NAO_ENCONTRADO"
+        }; // Produto não encontrado
     }
 
     consultarMaisVendidoMes(_mes) {
@@ -226,8 +232,9 @@ export class ArmazemController {
             for (let i = 0; i < produto.vetVendasMensais.length; i++) {
                 totalVendasAno += produto.vetVendasMensais[i];
             }
-            return {totalVendas: totalVendasAno,
-                    descricao: produto.descricao
+            return {
+                totalVendas: totalVendasAno,
+                descricao: produto.descricao
             };
         }
     }
@@ -237,8 +244,9 @@ export class ArmazemController {
         this.#vetProdutos.forEach(produto => {
             faturamentoMes += produto.vetVendasMensais[_mes - 1] * Number(produto.precoVenda);
         });
-        return {mes: _mes,
-                faturamento: faturamentoMes
+        return {
+            mes: _mes,
+            faturamento: faturamentoMes
         };
     }
 
@@ -258,7 +266,7 @@ export class ArmazemController {
         return vetObjLiteraisProdutos;
     }
 
-    listarTabelaVendasAnual(){
+    listarTabelaVendasAnual() {
         var vetObjLiteraisProdutos = [];
         this.#vetProdutos.forEach(p => {
             vetObjLiteraisProdutos.push({
@@ -290,14 +298,18 @@ export class ArmazemController {
     }
 
     //---------Métodos para Carregar e Salvar Dados---------
-    
+
     carregarDados() {
         let vetProdutosSalvos = [];
         let vetFornecedoresSalvos = [];
-        
+
         if (localStorage.hasOwnProperty("fornecedoresSalvos")) {
             let strJSONVetFornecedores = localStorage.getItem("fornecedoresSalvos");
             vetFornecedoresSalvos = JSON.parse(strJSONVetFornecedores);
+        }
+        if (localStorage.hasOwnProperty("produtosSalvos")) {
+            let strJSONVetProdutos = localStorage.getItem("produtosSalvos");
+            vetProdutosSalvos = JSON.parse(strJSONVetProdutos);
         }
         if (vetFornecedoresSalvos.length > 0) {
             vetFornecedoresSalvos.forEach((objLitFornecedor) => {
@@ -309,18 +321,11 @@ export class ArmazemController {
                 new Fornecedor("Fornecedor 2", "98.765.432/0001-90", "(22)88888-8888", "Endereço 2", 15000.0)
             ];
         }
-        if (localStorage.hasOwnProperty("produtosSalvos")) {
-            let strJSONVetProdutos = localStorage.getItem("produtosSalvos");
-            vetProdutosSalvos = JSON.parse(strJSONVetProdutos);
-        }
-        if (localStorage.hasOwnProperty("fornecedoresSalvos")) {
-            let strJSONVetFornecedores = localStorage.getItem("fornecedoresSalvos");
-            vetFornecedoresSalvos = JSON.parse(strJSONVetFornecedores);
-        }
+
         if (vetProdutosSalvos.length > 0) {
             vetProdutosSalvos.forEach((objLitProduto) => {
                 let objFornecedor = this.#vetFornecedores.find((fornecedor) =>
-                    fornecedor.cnpj == objLitProduto.fornecedor.cnpj
+                    fornecedor.cnpj == objLitProduto.fornecedor
                 );
                 if (objFornecedor != undefined) {
                     this.#vetProdutos.push(new Produto(objLitProduto.descricao, objLitProduto.precoCompra, objLitProduto.precoVenda, objLitProduto.qtdEstoque, objLitProduto.vetVendasMensais, objFornecedor));
@@ -332,8 +337,9 @@ export class ArmazemController {
                 new Produto("Produto 2", 20.0, 25.0, 50, [2, 6, 9, 12, 15, 18, 22, 26, 30, 35, 40, 45], this.#vetFornecedores[1])
             ];
         }
+
     }
-      
+
     salvarLocalStorage() {
         if (this.#vetProdutos.length > 0) {
             var strJSONVetProdutos = "[" + this.#vetProdutos[0].stringify();

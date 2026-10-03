@@ -95,14 +95,14 @@ export class Produto {
         )
     }
 
-    stringify(){
-        return '\n{' + 
-                '\n\t"descricao" : "' + this.#descricao + '" ,' + 
-                '\n\t"precoCompra" : "' + this.#precoCompra + '" ,' +
-                '\n\t"precoVenda" : "' + this.#precoVenda + '" ,' +
-                '\n\t"qtdEstoque" : "' + this.#qtdEstoque + '" ,' +
-                '\n\t"vetVendasMensais" : "' + this.#vetVendasMensais + '" ,' +
-                '\n\t"fornecedor" : "' + this.#fornecedor.cnpj + '"' +
-                '\n}'; 
-    }
+stringify() {
+    return JSON.stringify({
+        descricao: this.#descricao,
+        precoCompra: Number(this.#precoCompra),
+        precoVenda: Number(this.#precoVenda),
+        qtdEstoque: Number(this.#qtdEstoque),
+        vetVendasMensais: this.#vetVendasMensais,
+        fornecedor: this.#fornecedor.cnpj
+    });
 }
+} 
