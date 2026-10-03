@@ -11,8 +11,8 @@ export class Produto {
 
     constructor(_descricao, _precoCompra, _precoVenda, _qtdEstoque, _vetVendasMensais = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], _fornecedor = undefined){
         this.#descricao = _descricao;
-        this.#precoCompra = _precoCompra.toFixed(2);
-        this.#precoVenda = _precoVenda.toFixed(2);
+        this.#precoCompra = _precoCompra;
+        this.#precoVenda = _precoVenda;
         this.#qtdEstoque = _qtdEstoque;
         if (_vetVendasMensais.length == 12) {
             this.#vetVendasMensais = _vetVendasMensais;
